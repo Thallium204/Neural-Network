@@ -25,15 +25,15 @@ enum CostFunc{
 	SQUARED
 }
 
-func _ready():
+func createNetwork():
 	var netID = initNetwork([
 		{"size":3,"AType":AType.LINEAR}, # INPUT
-		{"size":4,"AType":AType.LINEAR},
+		{"size":4,"AType":AType.SOFTMAX},
 		{"size":2,"AType":AType.SOFTMAX}], # OUTPUT
 	generateExampleDataset(250),
 	CostFunc.ABSOLUTE)
 	generateTrainAndTest(0.60)
-	test()
+	get_parent().setNodePositions()
 
 func getStatus(context="general"):
 	print()
@@ -67,7 +67,7 @@ func generateExampleDataset(setSize:int):
 	
 	return ex_dataset
 
-func generateTrainAndTest(percTrain):
+func generateTrainAndTest(percTrain=0.60):
 	var sampleSize = dataset.size()
 	var trainSize = int(sampleSize * percTrain)
 	var datasetIDs = range(dataset.size())
@@ -99,7 +99,7 @@ func initNetwork(networkConfig:Array,givenDataset:Array,givenCostFunc:int):
 	for layerID in range(networkConfig.size()-1):
 		var fromLayerSize = networkConfig[layerID].size
 		var toLayerSize = networkConfig[layerID+1].size
-		weights[ [layerID,layerID+1] ] = Matrix(toLayerSize,fromLayerSize,"random")
+		weights[ [layerID,layerID+1] ] = Matrix(toLayerSize,fromLayerSize,"random",[-1,1])
 	getStatus("initial")
 
 func test():
@@ -155,7 +155,7 @@ func clearNodes():
 		for node in layer:
 			node = [0]
 
-func Matrix(rows:int,cols:int,entries="zeros"):
+func Matrix(rows:int,cols:int,entries="zeros",entryRange=[0,1]):
 	var matrix = []
 	match entries:
 		"zeros":
@@ -169,7 +169,7 @@ func Matrix(rows:int,cols:int,entries="zeros"):
 				var row = []
 				for colID in cols:
 					rng.randomize()
-					row.append(rng.randf_range(0,1))
+					row.append(rng.randf_range(entryRange[0],entryRange[1]))
 				matrix.append(row)
 	return matrix
 
@@ -193,6 +193,7 @@ func matMult(matA:Array,matB:Array):
 				matC[row][col] += matA[row][com]*matB[com][col]
 	#print(matA," * ",matB," = ",matC)
 	return matC
+
 
 
 

@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://NN.gd" type="Script" id=2]
+[ext_resource path="res://Network.gd" type="Script" id=3]
 
 [node name="Control" type="Control"]
 anchor_right = 1.0
@@ -11,5 +12,59 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="NeuralNetwork" type="Node" parent="."]
+[node name="Network" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 50.0
+margin_top = 50.0
+margin_right = -50.0
+margin_bottom = -150.0
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="colBack" type="ColorRect" parent="Network"]
+show_behind_parent = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.635294, 0.635294, 0.635294, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="NeuralNetwork" type="Node" parent="Network"]
 script = ExtResource( 2 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -50.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="btnTest" type="Button" parent="HBoxContainer"]
+margin_right = 338.0
+margin_bottom = 50.0
+size_flags_horizontal = 3
+text = "Test"
+
+[node name="btnShuffle" type="Button" parent="HBoxContainer"]
+margin_left = 342.0
+margin_right = 680.0
+margin_bottom = 50.0
+size_flags_horizontal = 3
+text = "Shuffle"
+
+[node name="btnCreate" type="Button" parent="HBoxContainer"]
+margin_left = 684.0
+margin_right = 1024.0
+margin_bottom = 50.0
+size_flags_horizontal = 3
+text = "Create"
+[connection signal="item_rect_changed" from="Network" to="Network" method="_on_Network_item_rect_changed"]
+[connection signal="pressed" from="HBoxContainer/btnTest" to="." method="_on_btnTest_pressed"]
+[connection signal="pressed" from="HBoxContainer/btnShuffle" to="." method="_on_btnShuffle_pressed"]
+[connection signal="pressed" from="HBoxContainer/btnCreate" to="." method="_on_btnCreate_pressed"]
